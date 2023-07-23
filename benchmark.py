@@ -152,9 +152,13 @@ if __name__ == "__main__":
     import os
 
     for entry in os.scandir("."):
-        if entry.is_dir():
-            dir_name = entry.name
+        if not entry.is_dir():
+            continue
+        dir_name = entry.name
+        
+        file_path = os.path.join(dir_name, "files.py")
+
+        if not os.path.exists(file_path):
+            continue
             
-            file_path = os.path.join(dir_name, "files.py")
-            if os.path.exists(file_path):
-                test_dir(dir_name)
+        test_dir(dir_name)
