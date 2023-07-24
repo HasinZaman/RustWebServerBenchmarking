@@ -36,13 +36,14 @@ def send_request(url: str):
         elapsed = end - start
 
         return (start, response.status_code, elapsed)
-    except:
+    except Exception as e:
+        print(e)
+
         end = time.time()
         elapsed = end - start
 
         return (start, "TIMEOUT", elapsed)
     
-
 def save_data(file_name: str, data: str):
     with open(file_name, "w") as f:
         f.write(data)
@@ -53,7 +54,7 @@ def bench_mark(image_name, output_name, url):
     
     def request_test():
         with Pool() as pool:
-            print("Sending requests")
+            print("Sending requests:{}".format(url))
             
             threads = []
 
@@ -65,7 +66,7 @@ def bench_mark(image_name, output_name, url):
                 request_time_data.append(value)
                 del threads[0]
 
-            print("Done sending requests")
+            print("Done sending requests:{}".format(url))
 
     def measure_memory():
         client = docker.from_env()
@@ -143,10 +144,11 @@ def test_dir(dir: str):
     start_container(test_env, dir_data.port)
 
     print("starting tests")
-    for file in dir_data.tests[:1]:
-        bench_mark(test_env, name, "_".join(file))
+    for file in dir_data.tests:
+        bench_mark(test_env, "{0}_{1}".format(file[0],name), file[1])
 
     close_container()
+
 
 if __name__ == "__main__":
     import os
