@@ -1,4 +1,11 @@
 import os
+import math
+
+# Defining constants
+MEMORY_USAGE = "MEMORY_USAGE"
+REQUEST_TIME = "REQUEST_TIME"
+
+# File parsing
 
 def parse_row(data_type):
     match(data_type):
@@ -40,6 +47,7 @@ def get_files():
         data.append((classification, get_file_content(classification[0], name)))
     return data
 
+# File partitioning
 def partition(seg, set):
     partition_1 = []
     partition_2 = []
@@ -61,7 +69,7 @@ def debug_wrapper(func):
     return tmp
 
 def is_mem(elem):
-    return elem[0][0] == "MEMORY_USAGE"
+    return elem[0][0] == MEMORY_USAGE
 def is_small(elem):
     return elem[0][1] == "SMALL"
 def is_backend(backend_tag):
