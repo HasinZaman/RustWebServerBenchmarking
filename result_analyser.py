@@ -31,7 +31,7 @@ def get_file_classification(name: str):
 
 def get_files():
     data = []
-    for file in os.scandir("."):
+    for file in os.scandir("benchmarkingResults"):
         if not file.is_file():
             continue
 
@@ -44,7 +44,7 @@ def get_files():
 
         classification = get_file_classification(name)
 
-        data.append((classification, get_file_content(classification[0], name)))
+        data.append((classification, get_file_content(classification[0], "benchmarkingResults//{}".format(name))))
     return data
 
 # File partitioning
@@ -100,6 +100,8 @@ def remove_outliers(data, key = lambda x: x):
     )[0]
 
 # Graph data
+
+
 # - Graph by type
 # - Graph by group
 # - waterfall graph of memory consumption with scatter graph on top
@@ -108,20 +110,14 @@ def remove_outliers(data, key = lambda x: x):
 if __name__ == "__main__":
     files = get_files()
 
-    print([e[1][:10] for e in files])
-    print("")
-    print("")
-    print([e[0] for e in partition(is_mem, files)[0]])
-    print("")
-    print([e[0] for e in partition(is_mem, files)[1]])
+    #print([e[1][:10] for e in files])
     print("")
 
-    print("")
-    print([e[0] for e in partition(is_small, files)[0]])
-    print("")
-    print([e[0] for e in partition(is_small, files)[1]])
-    print("")
-    
-    print("")
-    print([e[0] for e in partition(is_backend("flask"), partition(is_small, files)[0])[0]])
-    print([e[0] for e in partition(is_backend("flask"), partition(is_small, files)[0])[1]])
+    request = partition(is_mem, files)[1]
+
+    request_flask = partition(is_backend("flask"), request)[0]
+
+    request_small_flask = partition(is_small,request_flask)[0][0]
+
+    print([e for e in remove_outliers(request_small_flask[1], key=get_key["REQUEST_TIME"])][:10])
+
