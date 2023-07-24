@@ -75,10 +75,29 @@ def is_small(elem):
 def is_backend(backend_tag):
     return lambda elem: elem[0][2] == backend_tag
 
-# Get Stats
-# - get median
-# - get lower bound
-# - get upper bound
+# Stats
+get_key = {MEMORY_USAGE: lambda e: e[1], REQUEST_TIME: lambda e: e[2]}
+
+def percentile(k: float, sorted_data):
+    index = math.floor(len(sorted_data) * k)
+
+    return sorted_data[index]
+
+def remove_outliers(data, key = lambda x: x):
+    sorted_data = sorted(data, key=key, reverse=True)
+
+    percentile_25 = key(percentile(0.25, sorted_data))
+    percentile_75 = key(percentile(0.75, sorted_data))
+
+    quartile_range = abs(percentile_75-percentile_25)
+
+    upper = percentile_75 + 1.5*quartile_range
+    lower = percentile_25 - 1.5*quartile_range
+
+    return partition(
+        lambda elem: key(elem) < lower or upper < key(elem),
+        request_small_flask[1]
+    )[0]
 
 # Graph data
 # - Graph by type
