@@ -96,7 +96,7 @@ def remove_outliers(data, key = lambda x: x):
 
     return partition(
         lambda elem: key(elem) < lower or upper < key(elem),
-        request_small_flask[1]
+        data[1]
     )[0]
 
 # Graph data
