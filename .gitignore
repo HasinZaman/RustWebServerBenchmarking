@@ -1,2 +1,13 @@
 **/__pycache__/
 **/benchmark_data/**/*.csv
+
+Cargo.lock
+target/
+**/target/
+.vscode/
+.idea/
+*.rs.bk
+*.swp
+*~
+.DS_Store
+Thumbs.db
