@@ -1,2 +1,2 @@
 **/__pycache__/
-benchmarkingResults/*.csv
+**/benchmark_data/**/*.csv
