@@ -88,7 +88,7 @@ def bench_mark(image_name, output_name, url):
 
                 memory_usage.append((time.time(), memory / (1024 * 1024)))
 
-                time.sleep(0.1)
+                time.sleep(0.01)
             except:
                 break
 
