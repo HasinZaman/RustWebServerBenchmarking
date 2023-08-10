@@ -1,28 +1,126 @@
-use std::{ops::Deref, path::Path, fs::File, io::Read};
+use std::{
+    ops::Deref,
+    path::Path,
+    fs::File,
+    io::{
+        Read,
+        Error
+    },
+    num::{
+        ParseFloatError,
+        ParseIntError
+    },
+};
+
 
 #[derive(Debug)]
 pub enum DataError {
-    IoError(std::io::Error),
-    ParseFloatError(std::num::ParseFloatError),
-    ParseIntError(std::num::ParseIntError),
+    IoError(Error),
+    ParseFloatError(ParseFloatError),
+    ParseIntError(ParseIntError),
     MissingValueError,
 }
 
-impl From<std::io::Error> for DataError {
-    fn from(error: std::io::Error) -> Self {
+impl From<Error> for DataError {
+    fn from(error: Error) -> Self {
         DataError::IoError(error)
     }
 }
 
-impl From<std::num::ParseFloatError> for DataError {
-    fn from(error: std::num::ParseFloatError) -> Self {
+impl From<ParseFloatError> for DataError {
+    fn from(error: ParseFloatError) -> Self {
         DataError::ParseFloatError(error)
     }
 }
 
-impl From<std::num::ParseIntError> for DataError {
-    fn from(error: std::num::ParseIntError) -> Self {
+impl From<ParseIntError> for DataError {
+    fn from(error: ParseIntError) -> Self {
         DataError::ParseIntError(error)
+    }
+}
+
+#[derive(Debug)]
+pub enum BenchMarkVariant{
+    Small,
+    Large
+}
+
+impl TryFrom<&str> for BenchMarkVariant {
+    type Error = DataError;
+
+    fn try_from(variant_str: &str) -> Result<Self, Self::Error> {
+        match variant_str {
+            "Large" => Ok(BenchMarkVariant::Large),
+            "Small" => Ok(BenchMarkVariant::Small),
+            _ => todo!()
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct BenchMark {
+    pub name: String,
+    pub variant: BenchMarkVariant,
+    pub data: BenchMarkData
+}
+
+impl TryFrom<&Path> for BenchMark {
+    type Error = DataError;
+
+    fn try_from(path: &Path) -> Result<Self, Self::Error> {
+        if !path.is_file() {
+            todo!()
+        }
+
+        let name = path.file_name()
+            .ok_or(DataError::MissingValueError)?
+            .to_string_lossy();
+
+        let mut name_components = name.split('_').skip(2);
+
+        let data = BenchMarkData::try_from(path)?;
+
+        let variant =  BenchMarkVariant::try_from(name_components.next().ok_or(DataError::MissingValueError)?)?;
+
+        let name: String = name_components.collect();
+        let name: String = String::from(&name[..name.len() - 4]);
+
+        Ok(BenchMark {
+            name,
+            variant,
+            data,
+        })
+    }
+} 
+
+#[derive(Debug)]
+pub enum BenchMarkData {
+    Memory(MemoryData),
+    Request(RequestData),
+}
+
+impl TryFrom<&Path> for BenchMarkData {
+    type Error = DataError;
+
+    fn try_from(path: &Path) -> Result<Self, Self::Error> {
+        if !path.is_file() {
+            todo!()
+        }
+
+        let name = path.file_name()
+            .ok_or(DataError::MissingValueError)?
+            .to_string_lossy();
+
+        let mut name_components = name.split('_');
+
+        let benchmark_type = name_components.next()
+            .ok_or(DataError::MissingValueError)?;
+
+        return match benchmark_type {
+            "memory" => Ok(BenchMarkData::Memory(MemoryData::try_from(path)?)),
+            "request" => Ok(BenchMarkData::Request(RequestData::try_from(path)?)),
+            _ => panic!()
+        }
     }
 }
 
