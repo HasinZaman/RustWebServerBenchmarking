@@ -1,15 +1,16 @@
 use std::path::Path;
 
-use data::MemoryData;
+use crate::data::BenchMark;
 
 pub mod data;
+pub mod partition;
 
 
 fn main() {
-    let data = Path::new("benchmark_data\\memory_usage_Large_flask.csv");
+    let data = Path::new("benchmark_data\\request_time_Large_nginx.csv");
     
     println!("{:?}", &data);
 
-    let _data: MemoryData = data.try_into().unwrap();
+    let _data: BenchMark = data.try_into().unwrap();
     println!("{:?}", &_data);
 }
