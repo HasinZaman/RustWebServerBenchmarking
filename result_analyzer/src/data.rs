@@ -85,11 +85,13 @@ impl TryFrom<&Path> for BenchMark {
         let name: String = name_components.collect();
         let name: String = String::from(&name[..name.len() - 4]);
 
-        Ok(BenchMark {
+        Ok(
+            BenchMark {
             name,
             variant,
             data,
-        })
+            }
+        )
     }
 } 
 
