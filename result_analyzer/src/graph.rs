@@ -5,26 +5,26 @@ pub trait DataRender {
 }
 
 pub struct ColourPalette {
-    background: Color,
+    pub background: Color,
 
-    axis: Color,
+    pub axis: Color,
 
-    major_line: Color,
-    minor_line: Color,
+    pub major_line: Color,
+    pub minor_line: Color,
 
-    title: Color,
-    unit: Color,
+    pub title: Color,
+    pub unit: Color,
 }
 
 impl Default for ColourPalette {
     fn default() -> Self {
         Self {
-            background: todo!(),
-            axis: todo!(),
-            major_line: todo!(),
-            minor_line: todo!(),
-            title: todo!(),
-            unit: todo!(),
+            background: Color::from_rgb(255, 0, 0).unwrap(),
+            axis: Color::from_rgb(0, 255, 0).unwrap(),
+            major_line: Color::from_rgb(0, 0, 255).unwrap(),
+            minor_line: Color::from_rgb(255, 255, 0).unwrap(),
+            title: Color::from_rgb(255, 0, 255).unwrap(),
+            unit: Color::from_rgb(0, 255, 255).unwrap(),
         }
     }
 }
